@@ -2,7 +2,8 @@ from core.exercises.base import Exercise
 from utils.angle_utils import (
     check_shoulder_retraction, check_partial_shoulder_retraction,
     check_shoulder_elevation, check_partial_shoulder_elevation,
-    get_joint_angle, calculate_shoulder_rotation, check_supinated_forearm, check_partial_supination
+    get_joint_angle, calculate_shoulder_rotation, check_supinated_forearm, check_partial_supination,
+    check_elbow_extension, check_partial_elbow_extension, check_pronated_forearm
 )
 
 class A2Flexor(Exercise):
@@ -90,7 +91,60 @@ class A2Flexor(Exercise):
 class A2Extensor(Exercise):
     def __init__(self, config):
         super().__init__(config)
+        self.scores = {
+            "shoulder_position": 0,
+            "elbow_extension": 0,
+            "forearm_pronation": 0
+        }
+        # Store measured values for detailed feedback
+        self.measurements = {}
         
     def evaluate(self, landmarks, side_to_assess):
-        # TODO: Implement A2Extensor evaluation
-        return 0, {}
+        # Reset scores and measurements
+        for key in self.scores:
+            self.scores[key] = 0
+        self.measurements = {}
+        
+        # Shoulder Abduction and Internal Rotation
+        abduction_angle = get_joint_angle(landmarks, "shoulder_abduction", side_to_assess)
+        rotation_angle = calculate_shoulder_rotation(landmarks, side_to_assess)
+        internal_rotation = rotation_angle < 0  # Negative rotation angle indicates internal rotation
+        internal_rotation_angle = abs(rotation_angle) if internal_rotation else 0
+        
+        self.measurements["abduction_angle"] = abduction_angle
+        self.measurements["internal_rotation_angle"] = internal_rotation_angle
+        
+        # Full score if both are achieved fully
+        if abduction_angle >= 90 and internal_rotation_angle >= 45:
+            self.scores["shoulder_position"] = 2
+            self.measurements["shoulder_position"] = "full"
+        # Partial score if both reach partial thresholds
+        elif abduction_angle >= 45 and internal_rotation_angle >= 25:
+            self.scores["shoulder_position"] = 1
+            self.measurements["shoulder_position"] = "partial"
+        else:
+            self.measurements["shoulder_position"] = "none"
+        
+        # Elbow Extension
+        if check_elbow_extension(landmarks, side_to_assess, threshold=160):
+            self.scores["elbow_extension"] = 2
+            self.measurements["elbow_extension"] = "full"
+        elif check_partial_elbow_extension(landmarks, side_to_assess, threshold=135, full_threshold=160):
+            self.scores["elbow_extension"] = 1
+            self.measurements["elbow_extension"] = "partial"
+        else:
+            self.measurements["elbow_extension"] = "none"
+            
+        # Forearm Pronation
+        if check_pronated_forearm(landmarks, side_to_assess):
+            self.scores["forearm_pronation"] = 2
+            self.measurements["forearm_pronation"] = "full"
+        elif check_partial_supination(landmarks, side_to_assess):
+            self.scores["forearm_pronation"] = 1
+            self.measurements["forearm_pronation"] = "partial"
+        else:
+            self.measurements["forearm_pronation"] = "none"
+            
+        total_score = sum(self.scores.values())
+        
+        return total_score, self.measurements
