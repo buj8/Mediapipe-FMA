@@ -1,0 +1,15 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Ignore all assessment results, captured sessions and models
+data/assessment_reports
+data/captured_sessions
+data/models
