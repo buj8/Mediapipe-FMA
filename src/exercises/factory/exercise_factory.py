@@ -1,6 +1,7 @@
-from core.exercises.a2_exercises import A2Flexor, A2Extensor
-from core.exercises.a3_exercises import A3HandToLumbarSpine, A3ShoulderFlexion090, A3PronationSupinationElbow90
-from core.exercises.a4_exercises import A4ShoulderAbduction090, A4ShoulderFlexion90180, A4PronationSupinationElbow0
+from exercises.implementations.a2.exercises import A2Flexor, A2Extensor
+from exercises.implementations.a3.exercises import A3ShoulderFlexion090, A3PronationSupinationElbow90
+from exercises.implementations.a4.exercises import A4ShoulderAbduction090, A4ShoulderFlexion90180, A4PronationSupinationElbow0
+from exercises.base.base_exercise import Exercise
 
 class ExerciseFactory:
     @staticmethod
@@ -17,8 +18,6 @@ class ExerciseFactory:
             return A2Extensor(config)
             
         # A3 exercises
-        elif exercise_id == "a_3_hand-to-lumbar-spine":
-            return A3HandToLumbarSpine(config)
         elif exercise_id == "a_3_shoulder-flexion-0-90":
             return A3ShoulderFlexion090(config)
         elif exercise_id == "a_3_pronation-supination-elbow-90":
@@ -32,11 +31,6 @@ class ExerciseFactory:
         elif exercise_id == "a_4_pronation-supination-elbow-0":
             return A4PronationSupinationElbow0(config)
             
-        # Legacy support
-        elif exercise_id in ["a_4_shoulder_abduction", "shoulder_abduction_copy"]:
-            return A4ShoulderAbduction090(config)
-        
         # Default fallback - if we don't have a specific implementation,
         # use base class (though it will raise NotImplementedError when evaluated)
-        from core.exercises.base import Exercise
-        return Exercise(config)
+        return Exercise(config) 

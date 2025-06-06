@@ -62,40 +62,82 @@ def calculate_2d_sagittal_angle(landmark_a, landmark_b):
     return angle
 
 def get_joint_angle(landmarks, joint_type, side="left"):
+    """Calculate the angle for a specific joint."""
     side_dict = LEFT_LANDMARKS if side == "left" else RIGHT_LANDMARKS
     
-    if joint_type == "shoulder":
-        return calculate_angle(
-            [landmarks[side_dict["HIP"]].x, landmarks[side_dict["HIP"]].y, landmarks[side_dict["HIP"]].z],
-            [landmarks[side_dict["SHOULDER"]].x, landmarks[side_dict["SHOULDER"]].y, landmarks[side_dict["SHOULDER"]].z],
-            [landmarks[side_dict["ELBOW"]].x, landmarks[side_dict["ELBOW"]].y, landmarks[side_dict["ELBOW"]].z]
-        )
-    elif joint_type == "elbow":
-        return calculate_angle(
-            [landmarks[side_dict["SHOULDER"]].x, landmarks[side_dict["SHOULDER"]].y, landmarks[side_dict["SHOULDER"]].z],
-            [landmarks[side_dict["ELBOW"]].x, landmarks[side_dict["ELBOW"]].y, landmarks[side_dict["ELBOW"]].z],
-            [landmarks[side_dict["WRIST"]].x, landmarks[side_dict["WRIST"]].y, landmarks[side_dict["WRIST"]].z]
-        )
-    elif joint_type == "shoulder_abduction":
-        return calculate_2d_vertical_angle(
-            landmarks[side_dict["ELBOW"]], 
-            landmarks[side_dict["SHOULDER"]]
-        )
+    if joint_type == "shoulder_abduction":
+        # For shoulder abduction, we need shoulder, elbow, and a reference point
+        shoulder = landmarks[side_dict["SHOULDER"]]
+        elbow = landmarks[side_dict["ELBOW"]]
+        # Reference point is the opposite shoulder
+        opposite_dict = RIGHT_LANDMARKS if side == "left" else LEFT_LANDMARKS
+        reference = landmarks[opposite_dict["SHOULDER"]]
+        
+        # Calculate vectors
+        v1 = np.array([shoulder.x - reference.x, shoulder.y - reference.y])
+        v2 = np.array([elbow.x - shoulder.x, elbow.y - shoulder.y])
+        
     elif joint_type == "shoulder_flexion":
-        return calculate_2d_sagittal_angle(
-            landmarks[side_dict["SHOULDER"]],
-            landmarks[side_dict["ELBOW"]]
-        )
+        # For shoulder flexion, we need shoulder, elbow, and hip
+        shoulder = landmarks[side_dict["SHOULDER"]]
+        elbow = landmarks[side_dict["ELBOW"]]
+        hip = landmarks[side_dict["HIP"]]
+        
+        # Calculate vectors
+        v1 = np.array([shoulder.x - hip.x, shoulder.y - hip.y])
+        v2 = np.array([elbow.x - shoulder.x, elbow.y - shoulder.y])
+        
+    elif joint_type == "elbow":
+        # For elbow, we need shoulder, elbow, and wrist
+        shoulder = landmarks[side_dict["SHOULDER"]]
+        elbow = landmarks[side_dict["ELBOW"]]
+        wrist = landmarks[side_dict["WRIST"]]
+        
+        # Calculate vectors
+        v1 = np.array([shoulder.x - elbow.x, shoulder.y - elbow.y])
+        v2 = np.array([wrist.x - elbow.x, wrist.y - elbow.y])
+        
+    elif joint_type == "forearm_supination":
+        # For forearm supination, we need elbow, wrist, and a reference point
+        elbow = landmarks[side_dict["ELBOW"]]
+        wrist = landmarks[side_dict["WRIST"]]
+        shoulder = landmarks[side_dict["SHOULDER"]]
+        
+        # Calculate vectors
+        v1 = np.array([shoulder.x - elbow.x, shoulder.y - elbow.y])
+        v2 = np.array([wrist.x - elbow.x, wrist.y - elbow.y])
+        
+    elif joint_type == "forearm_pronation":
+        # For forearm pronation, we need elbow, wrist, and a reference point
+        elbow = landmarks[side_dict["ELBOW"]]
+        wrist = landmarks[side_dict["WRIST"]]
+        shoulder = landmarks[side_dict["SHOULDER"]]
+        
+        # Calculate vectors
+        v1 = np.array([shoulder.x - elbow.x, shoulder.y - elbow.y])
+        v2 = np.array([wrist.x - elbow.x, wrist.y - elbow.y])
+        
+    else:
+        raise ValueError(f"Unknown joint type: {joint_type}")
     
-    return 0
+    # Calculate angle
+    v1_norm = v1 / np.linalg.norm(v1) if np.linalg.norm(v1) > 0 else v1
+    v2_norm = v2 / np.linalg.norm(v2) if np.linalg.norm(v2) > 0 else v2
+    
+    dot = np.dot(v1_norm, v2_norm)
+    angle = math.degrees(math.acos(np.clip(dot, -1.0, 1.0)))
+    
+    # Determine sign of angle based on cross product
+    cross = np.cross(v1_norm, v2_norm)
+    sign = 1 if cross > 0 else -1
+    
+    return angle * sign
 
 def calculate_shoulder_width(landmarks):
-    """Calculate the distance between shoulders as a reference."""
+    """Calculate the width between shoulders."""
     left_shoulder = landmarks[LEFT_LANDMARKS["SHOULDER"]]
     right_shoulder = landmarks[RIGHT_LANDMARKS["SHOULDER"]]
-    return np.sqrt((left_shoulder.x - right_shoulder.x)**2 + 
-                   (left_shoulder.y - right_shoulder.y)**2 + 
-                   (left_shoulder.z - right_shoulder.z)**2)
+    return abs(left_shoulder.x - right_shoulder.x)
 
 def calculate_horizontal_distance(landmark_a, landmark_b):
     """Calculate horizontal distance between landmarks (x and z plane)."""
@@ -138,41 +180,6 @@ def calculate_shoulder_rotation(landmarks, side="left"):
     return angle * sign
 
 # ---------- SHOULDER FUNCTIONS ----------
-
-# Shoulder Retraction
-def check_shoulder_retraction(landmarks, side="left", threshold=0.7):
-    """Check if shoulder is retracted (pulled back)."""
-    side_dict = LEFT_LANDMARKS if side == "left" else RIGHT_LANDMARKS
-    opposite = "right" if side == "left" else "left"
-    opposite_dict = RIGHT_LANDMARKS if side == "left" else LEFT_LANDMARKS
-    
-    # Shoulder retraction: shoulder pulled back relative to the hip on the same side
-    shoulder = landmarks[side_dict["SHOULDER"]]
-    hip = landmarks[side_dict["HIP"]]
-    opposite_shoulder = landmarks[opposite_dict["SHOULDER"]]
-    
-    # Measure how far back the shoulder is relative to its neutral position
-    # Using z-axis (depth) comparison and normalizing by shoulder width
-    shoulder_width = calculate_shoulder_width(landmarks)
-    retraction_distance = (shoulder.z - hip.z) / shoulder_width
-    
-    return retraction_distance >= threshold
-
-def check_partial_shoulder_retraction(landmarks, side="left", threshold=0.3, full_threshold=0.7):
-    """Check if shoulder is partially retracted."""
-    retraction = check_shoulder_retraction(landmarks, side, full_threshold)
-    if retraction:
-        return False  # It's a full retraction, not partial
-    
-    # Same calculation but with a lower threshold for partial
-    side_dict = LEFT_LANDMARKS if side == "left" else RIGHT_LANDMARKS
-    shoulder = landmarks[side_dict["SHOULDER"]]
-    hip = landmarks[side_dict["HIP"]]
-    
-    shoulder_width = calculate_shoulder_width(landmarks)
-    retraction_distance = (shoulder.z - hip.z) / shoulder_width
-    
-    return retraction_distance >= threshold
 
 # Shoulder Elevation
 def check_shoulder_elevation(landmarks, side="left", threshold=0.2):

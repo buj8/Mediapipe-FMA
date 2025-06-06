@@ -21,7 +21,9 @@ class PoseDetector:
             base_options = python.BaseOptions(model_asset_path=self.model_path)
             options = vision.PoseLandmarkerOptions(
                 base_options=base_options,
-                output_segmentation_masks=True)
+                output_segmentation_masks=False,  # Disable segmentation for better performance
+                running_mode=vision.RunningMode.IMAGE,  # Use image mode instead of video
+                num_poses=1)  # Only detect one person
             self.detector = vision.PoseLandmarker.create_from_options(options)
             return True
         except Exception as e:

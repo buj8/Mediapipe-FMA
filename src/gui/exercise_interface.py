@@ -128,9 +128,6 @@ class ExerciseInterface:
                         canvas[y_start:y_start+new_height, 20:20+new_width] = resized_img
             except Exception as e:
                 print(f"Error loading reference image: {e}")
-
-
         
     def display(self, canvas):
-        cv2.imshow(self.window_name, canvas)
-        
+        cv2.imshow(self.window_name, canvas) 

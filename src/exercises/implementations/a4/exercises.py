@@ -1,5 +1,6 @@
-from core.exercises.base import Exercise
-from utils.angle_utils import get_joint_angle, check_elbow_extension, check_pronated_forearm
+from exercises.base.base_exercise import Exercise
+from utils.angle_utils import get_joint_angle
+from exercises.criteria.exercise_criteria import check_elbow_extension, check_pronated_forearm
 
 class A4ShoulderAbduction090(Exercise):
     def __init__(self, config):
@@ -42,4 +43,4 @@ class A4PronationSupinationElbow0(Exercise):
         
     def evaluate(self, landmarks, side_to_assess):
         # TODO: Implement A4PronationSupinationElbow0 evaluation
-        return 0, {}
+        return 0, {} 

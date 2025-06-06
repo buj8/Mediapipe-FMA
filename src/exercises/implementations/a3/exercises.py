@@ -1,14 +1,6 @@
-from core.exercises.base import Exercise
-from utils.angle_utils import check_elbow_extension, check_shoulder_flexion
-
-class A3HandToLumbarSpine(Exercise):
-    def __init__(self, config):
-        super().__init__(config)
-        
-    def evaluate(self, landmarks, side_to_assess):
-        # TODO: Implement A3HandToLumbarSpine evaluation
-        return 2, {}
-
+from exercises.base.base_exercise import Exercise
+from utils.angle_utils import get_joint_angle
+from exercises.criteria.exercise_criteria import check_shoulder_flexion, check_elbow_extension
 
 class A3ShoulderFlexion090(Exercise):
     def __init__(self, config):
@@ -34,4 +26,4 @@ class A3PronationSupinationElbow90(Exercise):
         
     def evaluate(self, landmarks, side_to_assess):
         #TODO: Implement A3PronationSupinationElbow90 evaluation
-        return 2, {}
+        return 2, {} 

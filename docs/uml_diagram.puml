@@ -1,0 +1,115 @@
+@startuml
+
+' Clases Principales
+class FuglMeyerAssessment {
+    - detector: PoseDetector
+    - exercises: List
+    - assessment_phase: str
+    - current_exercise_index: int
+    - results: Dict
+    - interface: ExerciseInterface
+    - evaluator: PoseEvaluator
+    - results_manager: ResultsManager
+    + initialize(): bool
+    + set_components(interface, evaluator, results_manager): void
+    + run_assessment(cap: VideoCapture): void
+    + run_exercise(cap, exercise, assessment_phase): bool
+    + get_side_results(side: str): Dict
+    + get_total_score(side: str): int
+    + get_asymmetry_index(): float
+}
+
+class PoseDetector {
+    - model_path: str
+    - detector: PoseLandmarker
+    + initialize(): bool
+    + process_frame(frame: ndarray): Tuple[ndarray, DetectionResult]
+    - _model_exists(model_url: str): bool
+}
+
+class PoseEvaluator {
+    - non_affected_side: str
+    - affected_side: str
+    - current_assessment_side: str
+    - current_exercise: Exercise
+    - _last_evaluation: Tuple
+    + set_assessment_side(side: str): void
+    + set_current_exercise(exercise_config: Dict): void
+    + evaluate_exercise(exercise_config: Dict, detection_result: DetectionResult): float
+    + get_actual_side(): str
+    + get_exercise_score(): float
+    + get_last_metrics(): Dict
+}
+
+class ResultsManager {
+    - affected_scores: Dict
+    - unaffected_scores: Dict
+    - total_score: int
+    - max_possible_score: int
+    + add_exercise_score(exercise_id: str, score: int, max_score: int, side: str): void
+    + save_report(): str
+    + generate_report(): Dict
+}
+
+' Clase Base de Ejercicios
+abstract class Exercise {
+    # id: str
+    # name: str
+    # description: str
+    # instructions: str
+    # reference_image: str
+    # duration: int
+    # required_stable_frames: int
+    # feedback_prompts: Dict
+    # max_score: int
+    + {abstract} evaluate(landmarks: Any, side_to_assess: str): Tuple[int, Dict]
+}
+
+class ExerciseFactory {
+    + {static} create_exercise(config: Dict): Exercise
+}
+
+' Clase de Criterios
+class Criteria {
+    + check_CRITERIA(landmarks: Any, side: str, threshold: float): bool
+}
+
+' Clases de Interfaz
+class ExerciseInterface {
+    - window_name: str
+    + create_split_screen(frame: ndarray, exercise: Dict, evaluator: PoseEvaluator, metrics: Dict, time_remaining: int): ndarray
+    + display(canvas: ndarray): void
+    - _draw_instructions(canvas: ndarray, exercise: Dict, metrics: Dict, current_side: str, actual_side: str): void
+    - _draw_camera_overlay(canvas: ndarray, current_side: str, actual_side: str, time_remaining: int): void
+}
+
+class ResultsInterface {
+    - window: QMainWindow
+    - app: QApplication
+    - results: ResultsManager
+    - affected_side: str
+    + show(): int
+}
+
+class ExerciseDetailsDialog {
+    - exercise: Dict
+    - affected_score: int
+    - unaffected_score: int
+}
+
+' Relaciones
+FuglMeyerAssessment *-- PoseDetector : "utiliza"
+FuglMeyerAssessment *-- ExerciseInterface : "utiliza"
+FuglMeyerAssessment *-- PoseEvaluator : "utiliza"
+FuglMeyerAssessment *-- ResultsManager : "utiliza"
+
+PoseEvaluator *-- ExerciseFactory : "utiliza"
+ExerciseFactory ..> Exercise : "crea"
+
+ResultsManager *-- ResultsInterface : "utiliza"
+ResultsInterface *-- ExerciseDetailsDialog : "muestra"
+
+PoseEvaluator ..> Exercise : "evalúa"
+Exercise ..> Criteria : "utiliza"
+
+@enduml 

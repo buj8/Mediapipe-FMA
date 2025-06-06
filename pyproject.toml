@@ -1,14 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "Mediapipe-FMA"
+name = "mediapipe-fma"
 version = "0.1.0"
-description = "Add your description here"
+description = "Fugl Meyer Assessment using MediaPipe"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "mediapipe>=0.10.21",
+    "PyQt6>=6.6.1",
+    "matplotlib>=3.8.2",
+    "numpy>=1.26.3",
+    "opencv-python>=4.9.0.80",
+    "seaborn>=0.13.2",
 ]
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
     "ipykernel>=6.29.5",
 ]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["core", "data", "config", "visualization"]

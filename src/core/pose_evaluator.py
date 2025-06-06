@@ -1,5 +1,5 @@
 from config.landmarks import *
-from core.exercises.factory import ExerciseFactory
+from exercises.factory.exercise_factory import ExerciseFactory
 
 class PoseEvaluator:
     def __init__(self, non_affected_side):

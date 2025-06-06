@@ -15,5 +15,4 @@ class Exercise:
         self.max_score = config.get("max_score", 2)
         
     def evaluate(self, landmarks, side_to_assess):
-        raise NotImplementedError("Subclasses must implement evaluate method")
-        
+        raise NotImplementedError("Subclasses must implement evaluate method") 

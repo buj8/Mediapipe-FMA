@@ -31,7 +31,7 @@ class ResultsManager:
            asymmetry_index = (affected_total - unaffected_total) / affected_total * 100
        
        report = {
-           "total_score": self.total_score,  # This is now only affected side
+           "total_score": self.total_score, 
            "max_score": self.max_possible_score,
            "percentage": (self.total_score / self.max_possible_score * 100) if self.max_possible_score > 0 else 0,
            "affected_side_scores": self.affected_scores,
