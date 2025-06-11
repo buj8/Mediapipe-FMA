@@ -1,6 +1,5 @@
 from exercises.base.base_exercise import Exercise
-from utils.angle_utils import get_joint_angle
-from exercises.criteria.exercise_criteria import check_shoulder_flexion, check_elbow_extension
+from exercises.criteria.exercise_criteria import calculate_shoulder_flexion_extension, calculate_forearm_pronation_x_axis
 
 class A3ShoulderFlexion090(Exercise):
     def __init__(self, config):
@@ -9,13 +8,10 @@ class A3ShoulderFlexion090(Exercise):
     def evaluate(self, landmarks, side_to_assess):
         metrics = {}
 
-        metrics["shoulder_flexion"] = check_shoulder_flexion(landmarks, side_to_assess)
-        metrics["extended_elbow"] = check_elbow_extension(landmarks, side_to_assess)
+        metrics["shoulder_flexion"] = calculate_shoulder_flexion_extension(landmarks, side_to_assess)
 
-        if metrics["shoulder_flexion"] and metrics["extended_elbow"]:
+        if metrics["shoulder_flexion"]:
             return 2, metrics
-        elif metrics["shoulder_flexion"] or metrics["extended_elbow"]:
-            return 1, metrics
         else:
             return 0, metrics
 
@@ -23,7 +19,25 @@ class A3ShoulderFlexion090(Exercise):
 class A3PronationSupinationElbow90(Exercise):
     def __init__(self, config):
         super().__init__(config)
+        self.pronation_reached = False
+        self.supination_reached = False
         
     def evaluate(self, landmarks, side_to_assess):
-        #TODO: Implement A3PronationSupinationElbow90 evaluation
-        return 2, {} 
+        metrics = {}
+
+        metrics["forearm_pronation_x_axis"] = calculate_forearm_pronation_x_axis(landmarks, side_to_assess)
+        total_score = 0
+
+        if metrics["forearm_pronation_x_axis"] == 2:
+            self.pronation_reached = True
+        elif metrics["forearm_pronation_x_axis"] == 0:
+            self.supination_reached = True
+
+        if self.pronation_reached and self.supination_reached:
+            total_score = 2
+        elif self.pronation_reached or self.supination_reached:
+            total_score = 1
+        else:
+            total_score = 0
+
+        return total_score, metrics

@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import os
 
+
 class ExerciseInterface:
     def __init__(self, window_name="Fugl Meyer Assessment"):
         self.window_name = window_name
@@ -96,7 +97,7 @@ class ExerciseInterface:
             
             for key, value in metrics.items():
                 if isinstance(value, float):
-                    metric_text = f"{key}: {value:.1f} degrees"
+                    metric_text = f"{key}: {value:.2f}"
                 elif isinstance(value, bool):
                     metric_text = f"{key}: {'Yes' if value else 'No'}"
                 else:

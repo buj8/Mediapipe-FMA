@@ -61,13 +61,7 @@ def main():
     cap.release()
     cv2.destroyAllWindows()
     
-    # Show results
-    results = ResultsManager()
-    results.affected_scores = assessment.get_side_results("affected")
-    results.unaffected_scores = assessment.get_side_results("unaffected")
-    results.total_score = assessment.get_total_score("affected")
-    results.max_possible_score = sum(exercise['max_score'] for exercise in assessment.exercises)
-    
+    # Show results using the original ResultsManager instance
     interface = ResultsInterface(results, evaluator.affected_side)
     return interface.show()
 

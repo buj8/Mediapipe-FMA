@@ -27,8 +27,8 @@ class ResultsManager:
        
        # Calculate asymmetry index
        asymmetry_index = 0
-       if affected_total > 0:
-           asymmetry_index = (affected_total - unaffected_total) / affected_total * 100
+       if unaffected_total > 0:
+           asymmetry_index = min(affected_total, unaffected_total) / unaffected_total * 100
        
        report = {
            "total_score": self.total_score, 

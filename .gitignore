@@ -2,6 +2,7 @@
 __pycache__/
 *.py[oc]
 build/
+main.dist/
 dist/
 wheels/
 *.egg-info
@@ -13,3 +14,5 @@ wheels/
 data/assessment_reports
 data/captured_sessions
 data/models
+test_images/
+src/external_processor.py

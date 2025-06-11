@@ -11,7 +11,7 @@ class ExerciseDetailsDialog(QDialog):
     def __init__(self, exercise, affected_score=None, unaffected_score=None, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Exercise Details")
-        self.setFixedSize(500, 400)
+        self.setFixedSize(500, 250)
         self.setStyleSheet("""
             QDialog {
                 background-color: white;
@@ -130,8 +130,8 @@ class ResultsInterface:
         """)
         self.window.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setSpacing(15)
-        main_layout.setContentsMargins(30, 20, 30, 20)
+        main_layout.setSpacing(8)
+        main_layout.setContentsMargins(15, 10, 15, 10)
         
         # Create main title
         self.create_main_title(main_layout)
@@ -166,10 +166,11 @@ class ResultsInterface:
             QFrame {
                 background-color: #1a237e;
                 border-radius: 8px;
-                padding: 10px;
+                padding: 5px;
             }
         """)
         title_layout = QVBoxLayout(title_frame)
+        title_layout.setContentsMargins(5, 5, 5, 5)
         
         title_label = QLabel("Fugl-Meyer Assessment")
         title_label.setStyleSheet("""
@@ -213,164 +214,204 @@ class ResultsInterface:
         parent_layout.addWidget(date_label)
         
     def create_summary_section(self, parent_layout):
+        # Card container for summary
+        summary_card = QFrame()
+        summary_card.setStyleSheet("""
+            QFrame {
+                background-color: #bfc3cc;
+                border-radius: 18px;
+                border: none;
+                padding: 10px 14px 10px 14px;
+            }
+        """)
+        summary_layout = QVBoxLayout(summary_card)
+        summary_layout.setSpacing(8)
+        summary_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Section title
         summary_label = QLabel("Summary")
         summary_label.setStyleSheet("""
             QLabel {
-                font-size: 18px;
+                font-size: 16px;
                 font-weight: bold;
                 color: #1a237e;
                 background-color: transparent;
+                margin-bottom: 2px;
             }
         """)
-        parent_layout.addWidget(summary_label)
-        
-        # Calculate scores
+        summary_layout.addWidget(summary_label)
+
+        # Overall Score (blue pill)
         total_score = self.results.total_score
         max_possible = sum(exercise['max_score'] for exercise in self.exercise_data['exercises'])
         percentage = (total_score / max_possible * 100) if max_possible > 0 else 0
-        asymmetry = self.results.generate_report()['asymmetry_index']
-        
-        # Create score layout
-        score_layout = QVBoxLayout()
-        score_layout.setSpacing(10)
-        
-        # Total score
-        total_label = QLabel(f"Overall Score: {total_score}/{max_possible} ({percentage:.1f}%)")
-        total_label.setStyleSheet("""
+        overall_frame = QFrame()
+        overall_frame.setStyleSheet("""
+            QFrame {
+                background-color: #8fa6e6;
+                border-radius: 14px;
+                border: none;
+                padding: 8px 16px;
+            }
+        """)
+        overall_layout = QHBoxLayout(overall_frame)
+        overall_layout.setContentsMargins(0, 0, 0, 0)
+        overall_layout.setSpacing(0)
+        overall_label = QLabel("Overall Score")
+        overall_label.setStyleSheet("""
             QLabel {
-                font-size: 24px;
+                font-size: 16px;
                 font-weight: bold;
                 color: #1a237e;
                 background-color: transparent;
-                padding: 12px;
-                border-radius: 4px;
-                background-color: #e3f2fd;
             }
         """)
-        score_layout.addWidget(total_label)
-        
-        # Affected side
-        affected_side_label = QLabel(f"Affected Side: {self.affected_side.capitalize()}")
-        affected_side_label.setStyleSheet("""
-            QLabel {
-                font-size: 16px;
-                color: #1a237e;
-                background-color: transparent;
-                padding: 8px;
-                border-radius: 4px;
-                background-color: #e8f5e9;
-            }
-        """)
-        score_layout.addWidget(affected_side_label)
-        
-        asymmetry_label = QLabel(f"Symmetry Index: {asymmetry:.1f}%")
-        asymmetry_label.setStyleSheet("""
-            QLabel {
-                font-size: 16px;
-                color: #1a237e;
-                background-color: transparent;
-                padding: 8px;
-                border-radius: 4px;
-                background-color: #fff3e0;
-            }
-        """)
-        score_layout.addWidget(asymmetry_label)
-        
-        parent_layout.addLayout(score_layout)
-        
-    def create_scores_list(self, parent_layout):
-        scores_label = QLabel("Detailed Scores")
-        scores_label.setStyleSheet("""
+        overall_value = QLabel(f"{total_score}/{max_possible} ({percentage:.0f}%)")
+        overall_value.setStyleSheet("""
             QLabel {
                 font-size: 18px;
                 font-weight: bold;
                 color: #1a237e;
                 background-color: transparent;
-                margin-top: 10px;
             }
         """)
-        parent_layout.addWidget(scores_label)
+        overall_layout.addWidget(overall_label)
+        overall_layout.addStretch()
+        overall_layout.addWidget(overall_value)
+        summary_layout.addWidget(overall_frame)
+
+
+        asymmetry = self.results.generate_report()['asymmetry_index']
+        pills_row = QFrame()
+        pills_row.setStyleSheet("QFrame { background: transparent; border: none; }")
+        pills_layout = QHBoxLayout(pills_row)
+        pills_layout.setContentsMargins(0, 0, 0, 0)
+        pills_layout.setSpacing(0)
+ 
+        symmetry_pill = QLabel(f"Symmetry index  <b>{asymmetry:.0f}%</b>")
+        symmetry_pill.setStyleSheet("""
+            QLabel {
+                background-color: #d6e9c6;
+                color: #1a237e;
+                border-radius: 12px;
+                border: none;
+                padding: 4px 14px;
+                font-size: 15px;
+            }
+        """)
+        # Affected side pill
+        affected_pill = QLabel(f"Affected side  <b>{self.affected_side.upper()}</b>")
+        affected_pill.setStyleSheet("""
+            QLabel {
+                background-color: #f7c7a3;
+                color: #1a237e;
+                border-radius: 12px;
+                border: none;
+                padding: 4px 14px;
+                font-size: 15px;
+            }
+        """)
+        pills_layout.addWidget(symmetry_pill)
+        pills_layout.addStretch()
+        pills_layout.addWidget(affected_pill)
+        summary_layout.addWidget(pills_row)
+        parent_layout.addWidget(summary_card)
         
-        # Create scrollable area for scores
+    def create_scores_list(self, parent_layout):
+        # Card container for scores
+        scores_card = QFrame()
+        scores_card.setStyleSheet("""
+            QFrame {
+                background-color: #bfc3cc;
+                border-radius: 18px;
+                border: none;
+                padding: 10px 14px 10px 14px;
+            }
+        """)
+        scores_layout = QVBoxLayout(scores_card)
+        scores_layout.setSpacing(8)
+        scores_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Section title
+        scores_label = QLabel("Exercise scores")
+        scores_label.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                font-weight: bold;
+                color: #1a237e;
+                background-color: transparent;
+                margin-bottom: 2px;
+            }
+        """)
+        scores_layout.addWidget(scores_label)
+
+        # Scroll area for exercises
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setStyleSheet("""
             QScrollArea {
                 border: none;
-                background-color: transparent;
+                background-color: #bfc3cc;
             }
         """)
-        
         scores_widget = QWidget()
-        scores_layout = QVBoxLayout(scores_widget)
-        scores_layout.setSpacing(8)
-        
-        # Add scores for all exercises
+        exercises_layout = QVBoxLayout(scores_widget)
+        exercises_layout.setSpacing(8)
+        exercises_layout.setContentsMargins(0, 0, 0, 0)
         for exercise in self.exercise_data['exercises']:
             exercise_id = exercise['id']
-            exercise_frame = QFrame()
-            exercise_frame.setStyleSheet("""
+            ex_frame = QFrame()
+            ex_frame.setStyleSheet("""
                 QFrame {
-                    background-color: white;
-                    border: 1px solid #e0e0e0;
-                    border-radius: 4px;
-                }
-                QFrame:hover {
-                    border: 1px solid #90caf9;
-                    background-color: #f5f9ff;
+                    background-color: #f5f6fa;
+                    border-radius: 14px;
+                    border: none;
                 }
             """)
-            exercise_frame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            
-            exercise_layout = QHBoxLayout(exercise_frame)
-            exercise_layout.setContentsMargins(8, 3, 8, 3)
-            
-            # Exercise title
+            ex_layout = QHBoxLayout(ex_frame)
+            ex_layout.setContentsMargins(16, 4, 16, 4)
+            ex_layout.setSpacing(0)
             title_label = QLabel(exercise['name'])
             title_label.setStyleSheet("""
                 QLabel {
-                    font-size: 16px;
-                    color: #2c3e50;
+                    font-size: 15px;
+                    color: #1a237e;
                     background-color: transparent;
                 }
             """)
-            
-            # Score or Skipped label
             if exercise_id in self.results.affected_scores:
                 score = self.results.affected_scores[exercise_id]
                 max_score = exercise['max_score']
-                score_label = QLabel(f"{score}/{max_score}")
+                score_label = QLabel(f"<b>{score}</b>")
                 score_label.setStyleSheet("""
                     QLabel {
-                        font-size: 16px;
+                        font-size: 18px;
                         color: #1a237e;
                         background-color: transparent;
                         font-weight: bold;
                     }
                 """)
             else:
-                score_label = QLabel("Skipped")
+                score_label = QLabel("<i>Skipped</i>")
                 score_label.setStyleSheet("""
                     QLabel {
-                        font-size: 16px;
+                        font-size: 15px;
                         color: #78909c;
                         background-color: transparent;
                         font-style: italic;
                     }
                 """)
-            
-            exercise_layout.addWidget(title_label)
-            exercise_layout.addStretch()
-            exercise_layout.addWidget(score_label)
-            
-            # Connect click event
-            exercise_frame.mousePressEvent = lambda event, e=exercise, a=self.results.affected_scores.get(exercise_id), u=self.results.unaffected_scores.get(exercise_id): self.show_exercise_details(e, a, u)
-            
-            scores_layout.addWidget(exercise_frame)
-        
-        scores_layout.addStretch()
+            ex_layout.addWidget(title_label)
+            ex_layout.addStretch()
+            ex_layout.addWidget(score_label)
+            # Restore clickable modal
+            ex_frame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            ex_frame.mousePressEvent = lambda event, e=exercise, a=self.results.affected_scores.get(exercise_id), u=self.results.unaffected_scores.get(exercise_id): self.show_exercise_details(e, a, u)
+            exercises_layout.addWidget(ex_frame)
+        exercises_layout.addStretch()
         scroll.setWidget(scores_widget)
-        parent_layout.addWidget(scroll)
+        scores_layout.addWidget(scroll)
+        parent_layout.addWidget(scores_card)
         
     def show_exercise_details(self, exercise, affected_score, unaffected_score):
         dialog = ExerciseDetailsDialog(exercise, affected_score, unaffected_score, self.window)
