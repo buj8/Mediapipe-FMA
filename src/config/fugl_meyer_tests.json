@@ -90,6 +90,32 @@
       "duration": 20,
       "required_stable_frames": 30,
       "max_score": 2
+    },
+    {
+      "id": "d_nose",
+      "name": "D. Nose",
+      "description": "Coordination/Speed",
+      "instructions": "Sit straight with your hand on your knee, while keeping your eyes closed, bring the tip of your index finger to the tip of your nose",
+      "reference_image": {
+        "right": "data/reference_poses/nose_r.png",
+        "left": "data/reference_poses/nose_l.png"
+      },
+      "duration": 20,
+      "required_stable_frames": 1,
+      "max_score": 4
+    },
+    {
+      "id": "d_knee",
+      "name": "D. Knee",
+      "description": "Coordination/Speed",
+      "instructions": "Sit straight with your hand on your knee, while keeping your eyes closed, bring the tip of your index finger to your knee",
+      "reference_image": {
+        "right": "data/reference_poses/nose_r.png",
+        "left": "data/reference_poses/nose_l.png"
+      },
+      "duration": 20,
+      "required_stable_frames": 1,
+      "max_score": 4
     }
   ]
 }

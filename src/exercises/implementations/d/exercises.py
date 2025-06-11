@@ -12,7 +12,7 @@ class DNose(Exercise):
         metrics = {}
         
         # Initialize start time if not set
-        if self.start_time is None:
+        if self.start_time is None or self.start_time - time.time() > 20:
             self.start_time = time.time()
         
         # Calculate distance between index finger and nose
@@ -54,7 +54,7 @@ class DKnee(Exercise):
         metrics = {}
         
         # Initialize start time if not set
-        if self.start_time is None:
+        if self.start_time is None or self.start_time - time.time() > 20:
             self.start_time = time.time()
         
         # Calculate distance between index finger and knee
