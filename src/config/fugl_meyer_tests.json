@@ -92,26 +92,13 @@
       "max_score": 2
     },
     {
-      "id": "d_nose",
-      "name": "D. Nose",
+      "id": "d_nose_knee",
+      "name": "D. Nose Knee",
       "description": "Coordination/Speed",
-      "instructions": "Sit straight with your hand on your knee, while keeping your eyes closed, bring the tip of your index finger to the tip of your nose",
+      "instructions": "Sit straight with your hand on your knee, while keeping your eyes closed, bring the tip of your index finger to the tip of your nose, as fast as possible, then bring the tip of your index finger to your knee, as fast as possible, as many times as possible in 20 seconds",
       "reference_image": {
-        "right": "data/reference_poses/nose_r.png",
-        "left": "data/reference_poses/nose_l.png"
-      },
-      "duration": 20,
-      "required_stable_frames": 1,
-      "max_score": 4
-    },
-    {
-      "id": "d_knee",
-      "name": "D. Knee",
-      "description": "Coordination/Speed",
-      "instructions": "Sit straight with your hand on your knee, while keeping your eyes closed, bring the tip of your index finger to your knee",
-      "reference_image": {
-        "right": "data/reference_poses/nose_r.png",
-        "left": "data/reference_poses/nose_l.png"
+        "right": "data/reference_poses/nose_knee_r.png",
+        "left": "data/reference_poses/nose_knee_l.png"
       },
       "duration": 20,
       "required_stable_frames": 1,

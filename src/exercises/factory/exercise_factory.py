@@ -1,7 +1,7 @@
 from exercises.implementations.a2.exercises import A2Flexor, A2Extensor
 from exercises.implementations.a3.exercises import A3ShoulderFlexion090, A3PronationSupinationElbow90
 from exercises.implementations.a4.exercises import A4ShoulderAbduction090, A4ShoulderFlexion90180, A4PronationSupinationElbow0
-from exercises.implementations.d.exercises import DNose, DKnee
+from exercises.implementations.d.exercises import DNoseKnee
 from exercises.base.base_exercise import Exercise
 
 class ExerciseFactory:
@@ -33,10 +33,8 @@ class ExerciseFactory:
             return A4PronationSupinationElbow0(config)
             
         # D exercises
-        elif exercise_id == "d_nose":
-            return DNose(config)
-        elif exercise_id == "d_knee":
-            return DKnee(config)
+        elif exercise_id == "d_nose_knee":
+            return DNoseKnee(config)
             
         # Default fallback - if we don't have a specific implementation,
         # use base class (though it will raise NotImplementedError when evaluated)
