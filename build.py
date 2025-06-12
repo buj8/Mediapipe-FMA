@@ -37,6 +37,10 @@ def build_executable():
         '--enable-plugin=pyqt6',
         '--enable-plugin=numpy',
         '--include-package=mediapipe',
+        '--include-package=mediapipe.python',
+        '--include-package=mediapipe.framework',
+        '--include-package=mediapipe.modules',
+        '--include-package=mediapipe.tasks',
         '--include-package=cv2',
         '--include-package=numpy',
         '--include-package=PyQt6',
@@ -50,6 +54,7 @@ def build_executable():
         '--show-progress',
         '--show-memory',
         '--verbose',
+        '--follow-imports',
         'main.py'
     ]
     

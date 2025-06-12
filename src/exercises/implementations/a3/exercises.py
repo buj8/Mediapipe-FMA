@@ -1,5 +1,5 @@
-from exercises.base.base_exercise import Exercise
-from exercises.criteria.exercise_criteria import calculate_shoulder_flexion_extension, calculate_forearm_pronation_x_axis
+from src.exercises.base.base_exercise import Exercise
+from src.exercises.criteria.exercise_criteria import calculate_shoulder_flexion_extension, calculate_forearm_pronation_x_axis
 
 class A3ShoulderFlexion090(Exercise):
     def __init__(self, config):
@@ -7,13 +7,22 @@ class A3ShoulderFlexion090(Exercise):
         
     def evaluate(self, landmarks, side_to_assess):
         metrics = {}
+        
+        # Calculate shoulder flexion angle
+        angle = calculate_shoulder_flexion_extension(landmarks, side_to_assess)
+        metrics["shoulder_flexion_angle"] = angle
 
-        metrics["shoulder_flexion"] = calculate_shoulder_flexion_extension(landmarks, side_to_assess)
-
-        if metrics["shoulder_flexion"]:
-            return 2, metrics
+        # All conditions met         
+        if angle >= 90:
+            score = 2
+        # Partial flexion
+        elif angle >= 45:
+            score = 1
+        # No flexion
         else:
-            return 0, metrics
+            score = 0
+            
+        return score, metrics
 
 
 class A3PronationSupinationElbow90(Exercise):
@@ -32,6 +41,9 @@ class A3PronationSupinationElbow90(Exercise):
             self.pronation_reached = True
         elif metrics["forearm_pronation_x_axis"] == 0:
             self.supination_reached = True
+        
+        metrics["pronation_reached"] = self.pronation_reached
+        metrics["supination_reached"] = self.supination_reached
 
         if self.pronation_reached and self.supination_reached:
             total_score = 2

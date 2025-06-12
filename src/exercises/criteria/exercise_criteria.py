@@ -1,6 +1,6 @@
 import math
 import numpy as np
-from config.landmarks import LEFT_LANDMARKS, RIGHT_LANDMARKS
+from src.config.landmarks import LEFT_LANDMARKS, RIGHT_LANDMARKS
 
 
 def calculate_shoulder_abduction_adduction(landmarks, side="left"):
@@ -214,7 +214,7 @@ def calculate_forearm_pronation_x_axis(landmarks, side="left"):
 
     if side == "right":
         # For right side
-        if abs(index_x - thumb_x) < 0.01:  # Index and thumb aligned
+        if abs(index_x - thumb_x) < 0.001:  # Index and thumb aligned
             return 1  # Neutral position
         elif pinky_x > index_x:
             return 2  # Pronation
@@ -222,7 +222,7 @@ def calculate_forearm_pronation_x_axis(landmarks, side="left"):
             return 0  # Supination
     else:
         # For left side (opposite logic)
-        if abs(index_x - thumb_x) < 0.01:  # Index and thumb aligned
+        if abs(index_x - thumb_x) < 0.001:  # Index and thumb aligned
             return 1  # Neutral position
         elif pinky_x < index_x:
             return 2  # Pronation
@@ -248,12 +248,12 @@ def calculate_forearm_pronation_y_axis(landmarks, side="left"):
     thumb_y = thumb.y
     pinky_y = pinky.y
 
-    if abs(thumb_y - pinky_y) < 0.01:  # Thumb and pinky at same height
+    if abs(thumb_y - pinky_y) < 0.005:  # Thumb and pinky at same height
         return 1  # Neutral position
     elif thumb_y > pinky_y:  # Thumb is below pinky
-        return 0  # Supination
+        return 0  # Pronation
     else:
-        return 2  # Pronation
+        return 2  # Supination
 
 
 

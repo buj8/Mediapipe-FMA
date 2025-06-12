@@ -1,9 +1,10 @@
 import cv2
 import mediapipe as mp
+import os
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-from utils.file_utils import download_file
-from config import settings
+from src.utils.file_utils import download_file
+from src.config import settings
 
 class PoseDetector:
     def __init__(self, model_path=settings.MODEL_PATH):
@@ -59,7 +60,6 @@ class PoseDetector:
         
     
     def _model_exists(self, model_url):
-        import os
         if not os.path.exists(self.model_path):
             return download_file(model_url, self.model_path)
         return True

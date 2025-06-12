@@ -23,3 +23,8 @@ dev = [
 [tool.setuptools]
 package-dir = {"" = "src"}
 packages = ["core", "config", "exercises", "gui", "utils"]
+
+[dependency-groups]
+dev = [
+    "nuitka>=2.7.7",
+]

@@ -1,5 +1,5 @@
-from exercises.base.base_exercise import Exercise
-from exercises.criteria.exercise_criteria import calculate_forearm_pronation_x_axis, calculate_shoulder_abduction_adduction, calculate_shoulder_elevation, calculate_shoulder_flexion_extension, calculate_forearm_pronation_y_axis
+from src.exercises.base.base_exercise import Exercise
+from src.exercises.criteria.exercise_criteria import calculate_forearm_pronation_x_axis, calculate_shoulder_abduction_adduction, calculate_shoulder_elevation, calculate_shoulder_flexion_extension, calculate_forearm_pronation_y_axis
 
 class A2Flexor(Exercise):
     def __init__(self, config):

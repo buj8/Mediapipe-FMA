@@ -1,5 +1,5 @@
-from exercises.base.base_exercise import Exercise
-from exercises.criteria.exercise_criteria import calculate_shoulder_abduction_adduction, calculate_shoulder_flexion_extension, calculate_forearm_pronation_x_axis
+from src.exercises.base.base_exercise import Exercise
+from src.exercises.criteria.exercise_criteria import calculate_shoulder_abduction_adduction, calculate_shoulder_flexion_extension, calculate_forearm_pronation_x_axis
 
 class A4ShoulderAbduction090(Exercise):
     def __init__(self, config):
@@ -37,7 +37,7 @@ class A4ShoulderFlexion90180(Exercise):
         metrics["shoulder_flexion_angle"] = angle
 
         # All conditions met         
-        if angle >= 125:
+        if angle >= 130:
             score = 2
         # Partial flexion
         elif angle >= 70:

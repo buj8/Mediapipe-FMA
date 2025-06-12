@@ -1,8 +1,8 @@
-from exercises.implementations.a2.exercises import A2Flexor, A2Extensor
-from exercises.implementations.a3.exercises import A3ShoulderFlexion090, A3PronationSupinationElbow90
-from exercises.implementations.a4.exercises import A4ShoulderAbduction090, A4ShoulderFlexion90180, A4PronationSupinationElbow0
-from exercises.implementations.d.exercises import DNoseKnee
-from exercises.base.base_exercise import Exercise
+from src.exercises.implementations.a2.exercises import A2Flexor, A2Extensor
+from src.exercises.implementations.a3.exercises import A3ShoulderFlexion090, A3PronationSupinationElbow90
+from src.exercises.implementations.a4.exercises import A4ShoulderAbduction090, A4ShoulderFlexion90180, A4PronationSupinationElbow0
+from src.exercises.implementations.d.exercises import DNoseKnee
+from src.exercises.base.base_exercise import Exercise
 
 class ExerciseFactory:
     @staticmethod

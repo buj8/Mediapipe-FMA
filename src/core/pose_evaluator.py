@@ -1,5 +1,5 @@
-from config.landmarks import *
-from exercises.factory.exercise_factory import ExerciseFactory
+from src.config.landmarks import *
+from src.exercises.factory.exercise_factory import ExerciseFactory
 
 class PoseEvaluator:
     def __init__(self, non_affected_side):
@@ -20,6 +20,9 @@ class PoseEvaluator:
     def set_current_exercise(self, exercise_config):
         if self.current_exercise is None or self.current_exercise.id != exercise_config.get("id"):
             self.current_exercise = ExerciseFactory.create_exercise(exercise_config)
+        
+    def reset_current_exercise(self):
+        self.current_exercise.reset()
         
     def evaluate_exercise(self, exercise_config, detection_result):
         if detection_result is None or not detection_result.pose_landmarks:

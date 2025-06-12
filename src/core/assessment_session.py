@@ -1,8 +1,8 @@
-from core.pose_detector import PoseDetector
-from utils.file_utils import load_fugl_meyer_tests
+from src.core.pose_detector import PoseDetector
+from src.utils.file_utils import load_fugl_meyer_tests
 import cv2
 import time
-from utils.pose_visualization import draw_landmarks
+from src.utils.pose_visualization import draw_landmarks
 
 class FuglMeyerAssessment:
     def __init__(self):
@@ -73,6 +73,8 @@ class FuglMeyerAssessment:
             # Then do affected side
             self.assessment_phase = "affected"
             print(f"\nStarting {self.assessment_phase} side...")
+
+            self.evaluator.reset_current_exercise()
             
             exercise_complete = self.run_exercise(cap, exercise, self.assessment_phase)
             if exercise_complete:
