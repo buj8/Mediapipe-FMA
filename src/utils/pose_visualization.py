@@ -11,6 +11,9 @@ def draw_landmarks(rgb_image, detection_result):
     if detection_result.pose_landmarks:
         for pose_landmarks in detection_result.pose_landmarks:
             pose_landmarks_proto = landmark_pb2.NormalizedLandmarkList()
+            # Always take exactly 33 landmarks (0-32), ignore any gesture strings after that
+            pose_landmarks_to_draw = pose_landmarks[:33]
+            
             pose_landmarks_proto.landmark.extend([
                 landmark_pb2.NormalizedLandmark(
                     x=landmark.x, 
@@ -18,7 +21,7 @@ def draw_landmarks(rgb_image, detection_result):
                     z=landmark.z,
                     visibility=landmark.visibility if hasattr(landmark, 'visibility') else 1.0
                 ) 
-                for landmark in pose_landmarks
+                for landmark in pose_landmarks_to_draw
             ])
             solutions.drawing_utils.draw_landmarks(
                 annotated_image,

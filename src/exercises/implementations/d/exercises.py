@@ -37,20 +37,20 @@ class DNoseKnee(Exercise):
             else:
                 self.precision_scores.append(0)
         elif self.current_state == "nose":
-            if nose_distance < 0.15:
+            if nose_distance < 0.033:
                 self.precision_scores[-1] = 2
-            elif nose_distance > 0.2:  # Moved away from nose
+            elif nose_distance > 0.066:  # Moved away from nose
                 self.current_state = "moving_to_knee"
         elif self.current_state == "moving_to_knee":
-            if knee_distance < 0.15:
+            if knee_distance < 0.033:
                 self.current_state = "knee"
                 self.precision_scores.append(1)
             else:
                 self.precision_scores.append(0)
         elif self.current_state == "knee":
-            if knee_distance < 0.1:
+            if knee_distance < 0.033:
                 self.precision_scores[-1] = 2
-            elif knee_distance > 0.2:  # Moved away from knee
+            elif knee_distance > 0.066:  # Moved away from knee
                 self.current_state = "moving_to_nose"
                 # Calculate time score for this repetition
                 elapsed_time = current_time - self.repetition_start_time
@@ -63,7 +63,7 @@ class DNoseKnee(Exercise):
                 self.times_completed += 1
                 self.repetition_start_time = current_time
         elif self.current_state == "moving_to_nose":
-            if nose_distance < 0.2:
+            if nose_distance < 0.066:
                 self.current_state = "nose"
                 self.precision_scores.append(1)
             else:

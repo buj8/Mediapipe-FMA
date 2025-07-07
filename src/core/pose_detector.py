@@ -50,14 +50,102 @@ class PoseDetector:
         detection_result = self.detector.detect(mp_image)
         
         # Get hand gesture results if requested
-        gesture_results = None
         if detect_gestures and self.hand_recognizer:
             gesture_results = self.hand_recognizer.recognize(mp_image)
-            return rgb_frame, detection_result, gesture_results
+            
+            
+            # Enhance pose landmarks with gesture information and hand landmarks
+            if detection_result.pose_landmarks and gesture_results:
+                enhanced_landmarks = self._enhance_landmarks_with_gestures(
+                    detection_result.pose_landmarks[0], 
+                    gesture_results
+                )
+                # Create a new detection result with enhanced landmarks
+                detection_result.pose_landmarks = [enhanced_landmarks]
         
         return rgb_frame, detection_result
             
         
+    
+    def _enhance_landmarks_with_gestures(self, pose_landmarks, gesture_results):
+        """
+        Enhance pose landmarks with gesture information and hand landmarks.
+        Adds right_gesture, left_gesture, and updates hand landmarks with gesture detector data.
+        """
+        # Create a copy of pose landmarks to avoid modifying the original
+        enhanced_landmarks = list(pose_landmarks)
+        
+        # Initialize gesture information
+        right_gesture = None
+        left_gesture = None
+        
+        enhanced_landmarks.extend([None, None])
+
+        # Process gesture results
+        if gesture_results.gestures and gesture_results.handedness:
+            for i, (gesture, handedness) in enumerate(zip(gesture_results.gestures, gesture_results.handedness)):
+                if handedness[0].category_name == "Right":
+                    right_gesture = gesture[0].category_name
+                    enhanced_landmarks[33] = right_gesture
+                elif handedness[0].category_name == "Left":
+                    left_gesture = gesture[0].category_name
+                    enhanced_landmarks[34] = left_gesture
+
+        
+        # Update hand landmarks with gesture detector data if available
+        if gesture_results.hand_landmarks and gesture_results.handedness:
+            for i, (hand_landmarks, handedness) in enumerate(zip(gesture_results.hand_landmarks, gesture_results.handedness)):
+                if handedness[0].category_name == "Right" and len(enhanced_landmarks) > 32:
+                    # Right hand landmarks (indices 16-22 in MediaPipe pose model)
+                    if len(hand_landmarks) >= 21:
+                        # Update pinky tip (landmark 20 -> pose landmark 18)
+                        enhanced_landmarks[18] = type(enhanced_landmarks[0])(
+                            x=hand_landmarks[20].x,
+                            y=hand_landmarks[20].y,
+                            z=hand_landmarks[20].z,
+                            visibility=1.0
+                        )
+                        # Update thumb tip (landmark 4 -> pose landmark 22)
+                        enhanced_landmarks[22] = type(enhanced_landmarks[0])(
+                            x=hand_landmarks[4].x,
+                            y=hand_landmarks[4].y,
+                            z=hand_landmarks[4].z,
+                            visibility=1.0
+                        )
+                        # Update index finger tip (landmark 8 -> pose landmark 23)
+                        enhanced_landmarks[20] = type(enhanced_landmarks[0])(
+                            x=hand_landmarks[8].x,
+                            y=hand_landmarks[8].y,
+                            z=hand_landmarks[8].z,
+                            visibility=1.0
+                        )
+                
+                elif handedness[0].category_name == "Left" and len(enhanced_landmarks) > 20:
+                    # Left hand landmarks (indices 15-21 in MediaPipe pose model)
+                    if len(hand_landmarks) >= 21:
+                        # Update pinky tip (landmark 20 -> pose landmark 17)
+                        enhanced_landmarks[17] = type(enhanced_landmarks[0])(
+                            x=hand_landmarks[20].x,
+                            y=hand_landmarks[20].y,
+                            z=hand_landmarks[20].z,
+                            visibility=1.0
+                        )
+                        # Update thumb tip (landmark 4 -> pose landmark 21)
+                        enhanced_landmarks[21] = type(enhanced_landmarks[0])(
+                            x=hand_landmarks[4].x,
+                            y=hand_landmarks[4].y,
+                            z=hand_landmarks[4].z,
+                            visibility=1.0
+                        )
+                        # Update index finger tip (landmark 8 -> pose landmark 23)
+                        enhanced_landmarks[19] = type(enhanced_landmarks[0])(
+                            x=hand_landmarks[8].x,
+                            y=hand_landmarks[8].y,
+                            z=hand_landmarks[8].z,
+                            visibility=1.0
+                        )
+        
+        return enhanced_landmarks
     
     def _model_exists(self, model_url):
         if not os.path.exists(self.model_path):

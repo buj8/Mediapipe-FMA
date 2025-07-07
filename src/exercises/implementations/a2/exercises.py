@@ -21,9 +21,9 @@ class A2Flexor(Exercise):
         abduction_angle = calculate_shoulder_abduction_adduction(landmarks, side_to_assess)
         self.measurements["abduction_angle"] = abduction_angle
         
-        if abduction_angle >= 90:
+        if abduction_angle >= 85:
             self.scores["shoulder_abduction"] = 2
-        elif 45 <= abduction_angle < 90:
+        elif 37 <= abduction_angle < 85:
             self.scores["shoulder_abduction"] = 1
             
         # Shoulder Elevation
@@ -32,7 +32,7 @@ class A2Flexor(Exercise):
         
         if shoulder_height_angle >= 5:
             self.scores["shoulder_elevation"] = 2
-        elif 2 <= shoulder_height_angle < 5:
+        elif 1 <= shoulder_height_angle < 5:
             self.scores["shoulder_elevation"] = 1
         else:
             self.scores["shoulder_elevation"] = 0
@@ -82,9 +82,9 @@ class A2Extensor(Exercise):
         abduction_angle = calculate_shoulder_abduction_adduction(landmarks, side_to_assess)
         self.measurements["abduction_angle"] = abduction_angle
         
-        if abduction_angle < -15:
+        if abduction_angle < -20:
             self.scores["shoulder_abduction"] = 2
-        elif -15 <= abduction_angle < -5:
+        elif -20 <= abduction_angle < -5:
             self.scores["shoulder_abduction"] = 1
             
         # Shoulder Flexion
@@ -93,7 +93,7 @@ class A2Extensor(Exercise):
         
         if flexion_angle <= 45:
             self.scores["shoulder_flexion"] = 2
-        elif 45 < flexion_angle <= 80:
+        elif 45 < flexion_angle <= 75:
             self.scores["shoulder_flexion"] = 1
 
         # Forearm supination

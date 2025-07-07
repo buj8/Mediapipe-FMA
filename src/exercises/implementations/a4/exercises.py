@@ -16,7 +16,7 @@ class A4ShoulderAbduction090(Exercise):
         if angle >= 90:
             score = 2
         # Partial abduction
-        elif angle >= 45:
+        elif angle >= 37:
             score = 1
         # No abduction
         else:
@@ -40,7 +40,7 @@ class A4ShoulderFlexion90180(Exercise):
         if angle >= 130:
             score = 2
         # Partial flexion
-        elif angle >= 70:
+        elif angle >= 90:
             score = 1
         # No flexion
         else:

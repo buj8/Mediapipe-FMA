@@ -114,7 +114,8 @@ class FuglMeyerAssessment:
                 break
                 
             # Process the frame with pose detection
-            rgb_frame, detection_result = self.detector.process_frame(frame)
+            
+            rgb_frame, detection_result = self.detector.process_frame(frame, detect_gestures=exercise.get("gesture_required", False))
             annotated_frame = draw_landmarks(rgb_frame, detection_result)
             
             # Convert back to BGR 

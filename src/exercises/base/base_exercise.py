@@ -14,6 +14,7 @@ class Exercise:
         self.required_stable_frames = config.get("required_stable_frames", 120)
         self.feedback_prompts = config.get("feedback_prompts", {})
         self.max_score = config.get("max_score", 2)
+        self.gesture_required = config.get("gesture_required", False)
 
     def reset(self):
         self.__init__(self.config)

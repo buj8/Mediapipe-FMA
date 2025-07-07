@@ -103,8 +103,6 @@ def calculate_shoulder_elevation(landmarks, side="left"):
 
     v1 = v1 / np.linalg.norm(v1)
 
-    
-
     # Calculate the angle between the two vectors
     angle = math.degrees(math.acos(np.dot(v1, v2)))
 
@@ -212,19 +210,21 @@ def calculate_forearm_pronation_x_axis(landmarks, side="left"):
     index_x = index.x
     pinky_x = pinky.x
 
+
+    # If the index is between the thumb and the pinky, the pronation is 1 (neutral)
     if side == "right":
         # For right side
-        if abs(index_x - thumb_x) < 0.001:  # Index and thumb aligned
+        if abs(index_x - thumb_x) < 0.0045:  # Index and thumb aligned
             return 1  # Neutral position
-        elif pinky_x > index_x:
+        elif pinky_x > thumb_x:
             return 2  # Pronation
         else:
             return 0  # Supination
     else:
         # For left side (opposite logic)
-        if abs(index_x - thumb_x) < 0.001:  # Index and thumb aligned
+        if abs(index_x - thumb_x) < 0.0045:  # Index and thumb aligned
             return 1  # Neutral position
-        elif pinky_x < index_x:
+        elif pinky_x < thumb_x:
             return 2  # Pronation
         else:
             return 0  # Supination
@@ -244,16 +244,19 @@ def calculate_forearm_pronation_y_axis(landmarks, side="left"):
     thumb = landmarks[side_dict["THUMB"]]
     pinky = landmarks[side_dict["PINKY"]]
 
+
+
     # Get y coordinates
     thumb_y = thumb.y
     pinky_y = pinky.y
 
+
     if abs(thumb_y - pinky_y) < 0.005:  # Thumb and pinky at same height
-        return 1  # Neutral position
-    elif thumb_y > pinky_y:  # Thumb is below pinky
-        return 0  # Pronation
+        return 1 # Neutral position
+    elif thumb_y > pinky_y:  # Thumb is above pinky
+        return 2 # Pronation
     else:
-        return 2  # Supination
+        return 0  # Supination
 
 
 

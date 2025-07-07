@@ -1,6 +1,7 @@
 from src.exercises.implementations.a2.exercises import A2Flexor, A2Extensor
 from src.exercises.implementations.a3.exercises import A3ShoulderFlexion090, A3PronationSupinationElbow90
 from src.exercises.implementations.a4.exercises import A4ShoulderAbduction090, A4ShoulderFlexion90180, A4PronationSupinationElbow0
+from src.exercises.implementations.c.exercises import CFlexion, CExtension
 from src.exercises.implementations.d.exercises import DNoseKnee
 from src.exercises.base.base_exercise import Exercise
 
@@ -31,6 +32,12 @@ class ExerciseFactory:
             return A4ShoulderFlexion90180(config)
         elif exercise_id == "a_4_pronation-supination-elbow-0":
             return A4PronationSupinationElbow0(config)
+        
+        # C exercises
+        elif exercise_id == "c_flexion":
+            return CFlexion(config)
+        elif exercise_id == "c_extension":
+            return CExtension(config)
             
         # D exercises
         elif exercise_id == "d_nose_knee":

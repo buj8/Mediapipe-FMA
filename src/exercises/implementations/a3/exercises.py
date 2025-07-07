@@ -11,12 +11,11 @@ class A3ShoulderFlexion090(Exercise):
         # Calculate shoulder flexion angle
         angle = calculate_shoulder_flexion_extension(landmarks, side_to_assess)
         metrics["shoulder_flexion_angle"] = angle
-
         # All conditions met         
-        if angle >= 90:
+        if angle >= 85:
             score = 2
         # Partial flexion
-        elif angle >= 45:
+        elif angle >= 37:
             score = 1
         # No flexion
         else:
